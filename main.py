@@ -14,13 +14,13 @@ class AlienInvasion:
         self.settings = Settings()
 
         # Open app in small window
-        # self.screen = pygame.display.set_mode(
-        #     (self.settings.screen_width, self.settings.screen_height))
+        self.screen = pygame.display.set_mode(
+            (self.settings.screen_width, self.settings.screen_height))
 
         # Open app in full screen mode
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.settings.screen_width = self.screen.get_rect().width
-        self.settings.screen_height = self.screen.get_rect().height
+        # self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        # self.settings.screen_width = self.screen.get_rect().width
+        # self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Alien invasion")
 
         self.ship = Ship(self)
@@ -33,6 +33,13 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self.bullets.update()
+
+            # Delate bullets that are out of screen
+            for bullet in self.bullets.copy():
+                if bullet.rect.bottom <= 0:
+                    self.bullets.remove(bullet)
+            print((len(self.bullets)))
+            1
             self._updatae_screen()
 
 
