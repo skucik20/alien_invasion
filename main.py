@@ -39,7 +39,6 @@ class AlienInvasion:
                 if bullet.rect.bottom <= 0:
                     self.bullets.remove(bullet)
             print((len(self.bullets)))
-            1
             self._updatae_screen()
 
 
@@ -95,6 +94,11 @@ class AlienInvasion:
         # Display modified screen
         pygame.display.flip()
 
+    def _fire_bullet(self):
+        """Create new bullet and add to bullet group"""
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
 
 if __name__ == '__main__':
     ai = AlienInvasion()
