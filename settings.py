@@ -1,13 +1,19 @@
+from game_stats import GameStats
+import pygame
 class Settings:
     def __init__(self):
+
+        #self.stat = GameStats(self)
+
         # Display settings
         self.screen_width = 1200
         self.screen_height = 800
         self.bg_color = (255, 193, 37)
         self.ship_speed = 1.5
+        self.ship_limit = 3
 
         # Alien settings
-        self.alien_speed = 1.0
+        self.alien_speed = 0
         self.fleet_drop_speed = 10
         # Value fleet direction 1 is move right, -1 is left
         self.fleet_direction = 1
@@ -18,3 +24,4 @@ class Settings:
         self.bullet_height = 15
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 5
+
