@@ -39,9 +39,9 @@ class AlienInvasion:
             self.ship.update()
             self.bullets.update()
             self._update_bullets()
-            #print((len(self.bullets)))
-            self._updatae_screen()
-
+            self._update_aliens()
+            # print((len(self.bullets)))
+            self._update_screen()
 
     def _check_events(self):
         """Reaction for mouse/keyboard click"""
@@ -56,7 +56,7 @@ class AlienInvasion:
             elif event.type == pygame.KEYUP:
                 self._check_events_keyup_events(event)
 
-    def _check_events_keydown_events(self,event):
+    def _check_events_keydown_events(self, event):
         """Reaction for click button"""
         if event.key == pygame.K_RIGHT:
             # Move ship to right
@@ -72,7 +72,7 @@ class AlienInvasion:
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
 
-    def _check_events_keyup_events(self,event):
+    def _check_events_keyup_events(self, event):
         """Reaction for unclick button"""
         if event.key == pygame.K_RIGHT:
             # Stop move right
@@ -86,7 +86,7 @@ class AlienInvasion:
         new_bullet = Bullet(self)
         self.bullets.add(new_bullet)
 
-    def _updatae_screen(self):
+    def _update_screen(self):
         """Update pictures on screen, move to now screen"""
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
@@ -104,14 +104,16 @@ class AlienInvasion:
             self.bullets.add(new_bullet)
 
     def _update_bullets(self):
-        """Actualization bullet placement, and delate invisible"""
+        """Actualization bullet placement, and delete invisible"""
 
-        # Actualiztion bullet placement
+        # Actualization bullet placement
         self.bullets.update()
-        # Delate bullets that are out of screen
+        # Delete bullets that are out of screen
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
+        collisions = pygame.sprite.groupcollide(
+            self.bullets, self.aliens, True, True)
 
     def _create_fleet(self):
         """Make alien army"""
@@ -119,7 +121,7 @@ class AlienInvasion:
         alien_width = alien.rect.width
         alien_height = alien.rect.height
         available_space_x = self.settings.screen_width - (2 * alien_width)
-        number_aliens_x = available_space_x // (2*alien_width)
+        number_aliens_x = available_space_x // (2 * alien_width)
 
         # How much rows in screen?
         ship_height = self.ship.rect.height
@@ -132,7 +134,6 @@ class AlienInvasion:
             for alien_number in range(number_aliens_x):
                 self._create_alien(alien_number, row_number)
 
-
     def _create_alien(self, alien_number, row_number):
         alien = Alien(self)
         alien_width = alien.rect.width
@@ -141,6 +142,25 @@ class AlienInvasion:
         alien.rect.x = alien.x
         alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
         self.aliens.add(alien)
+
+    def _check_fleet_edges(self):
+        """Proper reaction if alien touch edge of the screen"""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
+    def _change_fleet_direction(self):
+        """Move fleet down and change direction"""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
+
+    def _update_aliens(self):
+        """Update placement of the aliens"""
+        self._check_fleet_edges()
+        self.aliens.update()
+
 
 if __name__ == '__main__':
     ai = AlienInvasion()
